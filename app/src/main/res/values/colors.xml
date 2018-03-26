@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorWhite">#ffffff</color>
+
+    <color name="background_app_gray_200">#f5f5f5</color>
+    <color name="colorMenos">#8fa5be</color>
+    <color name="colorMais">#4a73c1</color>
+    <color name="background_carrinho">#e1dfdf</color>
+</resources>

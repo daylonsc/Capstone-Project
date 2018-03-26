@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Me venda</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="navigation_drawer_item_label_1">Produtos</string>
+    <string name="navigation_drawer_item_label_2">Clientes</string>
+    <string name="navigation_drawer_item_label_3">Pedidos</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_produto_list">Produtos</string>
+    <string name="title_activity_cliente_list">Clientes</string>
+    <string name="title_activity_pedido_list">Pedidos</string>
+    <string name="title_activity_cadastro_pedido">Cadastro de Pedido</string>
+
+
+    <!-- Strings related to pedido -->
+    <string name="action_cliente">Selecione um cliente</string>
+    <string name="action_produto">Adicione Produtos</string>
+    <string name="action_mostrar_itens">Mostrar Itens</string>
+    <string name="action_ocultar_itens">Ocultar Itens</string>
+    <string name="action_gerar_pedido">Gerar Pedido</string>
+    <string name="label_quantidade">Quantidade</string>
+    <string name="label_valor_total">Valor Total:</string>
+    <string name="tv_total_itens">0</string>
+    <string name="tv_valor_total_pedido">R$ 0,00</string>
+
+</resources>
