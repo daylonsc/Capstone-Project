@@ -42,7 +42,7 @@ public class ProdutoListActivity extends AppCompatActivity {
 
         isFromPedido = (boolean) getIntent().getSerializableExtra(FPedidoActivity.IS_FROM_PEDIDO);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,6 +60,11 @@ public class ProdutoListActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.produto_carrinho, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_save);
+        if (!isFromPedido) {
+            menuItem.setVisible(false);
+        }
         return true;
     }
 
@@ -71,7 +76,7 @@ public class ProdutoListActivity extends AppCompatActivity {
                 return true;
             case R.id.action_save:
                 Intent intent = new Intent();
-                List<Produto> produtoList =  mAdapterCarrinho.getItensCarrinho();
+                List<Produto> produtoList = mAdapterCarrinho.getItensCarrinho();
 
                 intent.putParcelableArrayListExtra(FPedidoActivity.LIST_PRODUTO_CARRINHO_PARAMETER, (ArrayList<? extends Parcelable>) produtoList);
                 setResult(3, intent);
@@ -120,7 +125,7 @@ public class ProdutoListActivity extends AppCompatActivity {
                 }
             });
         }
-        mRecyclerView = (RecyclerView) findViewById(R.id.produto_recycler_view);
+        mRecyclerView = findViewById(R.id.produto_recycler_view);
         mRecyclerView.setAdapter(isFromPedido ? mAdapterCarrinho : mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
