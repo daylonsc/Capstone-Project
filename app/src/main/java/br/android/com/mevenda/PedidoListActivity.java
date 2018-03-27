@@ -12,20 +12,30 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.LibraryClass;
 import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.adapters.PedidosRecyclerViewAdapter;
 import br.android.com.mevenda.adapters.ProdutosRecyclerViewAdapter;
+import br.android.com.mevenda.bean.Cliente;
 import br.android.com.mevenda.bean.Pedido;
 import br.android.com.mevenda.bean.Produto;
 import io.realm.Realm;
 
 public class PedidoListActivity extends AppCompatActivity {
 
-    private final Class classCadastro = Pedido.class;
     private RecyclerView mRecyclerView;
     private PedidosRecyclerViewAdapter mAdapter;
+    private DatabaseReference firebase;
+    private ValueEventListener valueEventListener;
+    private List<Pedido> pedidos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,9 @@ public class PedidoListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        pedidos = new ArrayList<Pedido>();
+
+        atualizarLista();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,12 +55,6 @@ public class PedidoListActivity extends AppCompatActivity {
                 irParaCadastroPedido();
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        atualizarLista();
     }
 
     @Override
@@ -67,10 +74,8 @@ public class PedidoListActivity extends AppCompatActivity {
     }
 
     private void atualizarLista() {
-        Realm realm = Realm.getDefaultInstance();
-        List<Pedido> list = realm.where(classCadastro).findAll();
 
-        mAdapter = new PedidosRecyclerViewAdapter(this, list, new PedidosRecyclerViewAdapter.OnItemClickListener() {
+        mAdapter = new PedidosRecyclerViewAdapter(this, pedidos, new PedidosRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
 
@@ -81,6 +86,46 @@ public class PedidoListActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        firebase = LibraryClass.getFirebase().child("pedidos");
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                pedidos.clear();
+
+                for (DataSnapshot dados : dataSnapshot.getChildren()) {
+                    Pedido pedido = dados.getValue(Pedido.class);
+                    pedidos.add(pedido);
+                }
+
+                mAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        firebase.addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebase.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebase.addValueEventListener(valueEventListener);
     }
 
 }

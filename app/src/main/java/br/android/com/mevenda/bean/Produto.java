@@ -11,15 +11,13 @@ import io.realm.annotations.PrimaryKey;
  * Created by daylo on 17/03/2018.
  */
 
-public class Produto extends RealmObject implements Parcelable {
-    @PrimaryKey
-    private int id;
+public class Produto implements Parcelable {
+    private String id;
     private String nome;
     private int quantidadeEstoque;
     private double preco;
 
     //Atributo virtual para facilitar escolha das quantidades do pedido
-    @Ignore
     private int quantidadePedido;
 
     public Produto() {
@@ -27,7 +25,7 @@ public class Produto extends RealmObject implements Parcelable {
     }
 
     protected Produto(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         nome = in.readString();
         quantidadeEstoque = in.readInt();
         preco = in.readDouble();
@@ -46,11 +44,11 @@ public class Produto extends RealmObject implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -93,7 +91,7 @@ public class Produto extends RealmObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
+        parcel.writeString(id);
         parcel.writeString(nome);
         parcel.writeInt(quantidadeEstoque);
         parcel.writeDouble(preco);

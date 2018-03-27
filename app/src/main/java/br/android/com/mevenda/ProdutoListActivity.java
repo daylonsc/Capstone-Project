@@ -14,9 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.LibraryClass;
 import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.adapters.ProdutosCarrinhoRecyclerViewAdapter;
 import br.android.com.mevenda.adapters.ProdutosRecyclerViewAdapter;
@@ -26,11 +33,13 @@ import io.realm.Realm;
 
 public class ProdutoListActivity extends AppCompatActivity {
 
-    private final Class classCadastro = Produto.class;
     private RecyclerView mRecyclerView;
     private ProdutosRecyclerViewAdapter mAdapter;
     private ProdutosCarrinhoRecyclerViewAdapter mAdapterCarrinho;
     private boolean isFromPedido;
+    private DatabaseReference firebase;
+    private ValueEventListener valueEventListener;
+    private List<Produto> produtos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +49,11 @@ public class ProdutoListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        produtos = new ArrayList<Produto>();
+
         isFromPedido = (boolean) getIntent().getSerializableExtra(FPedidoActivity.IS_FROM_PEDIDO);
+
+        atualizarLista();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +62,6 @@ public class ProdutoListActivity extends AppCompatActivity {
                 cadastrarProduto(view);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        atualizarLista();
     }
 
     @Override
@@ -89,36 +96,35 @@ public class ProdutoListActivity extends AppCompatActivity {
     }
 
     private void cadastrarProduto(View view) {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("produtos");
+        String id = mDatabase.push().getKey();
         Produto produto = new Produto();
-        int id = Utils.getNextId(classCadastro);
         produto.setId(id);
         produto.setNome("Produto Teste " + id);
-        produto.setQuantidadeEstoque(2 + id);
+        produto.setQuantidadeEstoque(2);
         produto.setPreco(50);
 
-        realm.copyToRealm(produto);
-        realm.commitTransaction();
-        realm.close();
+        try {
+            firebase.child(produto.getId()).setValue(produto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Snackbar.make(view, "Produto inserido com sucesso!", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
         atualizarLista();
     }
 
     private void atualizarLista() {
-        Realm realm = Realm.getDefaultInstance();
-        List<Produto> list = realm.where(classCadastro).findAll();
         if (isFromPedido) {
-            mAdapterCarrinho = new ProdutosCarrinhoRecyclerViewAdapter(this, list, new ProdutosCarrinhoRecyclerViewAdapter.OnItemClickListener() {
+            mAdapterCarrinho = new ProdutosCarrinhoRecyclerViewAdapter(this, produtos, new ProdutosCarrinhoRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
 
                 }
             });
         } else {
-            mAdapter = new ProdutosRecyclerViewAdapter(this, list, new ProdutosRecyclerViewAdapter.OnItemClickListener() {
+            mAdapter = new ProdutosRecyclerViewAdapter(this, produtos, new ProdutosRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
 
@@ -130,5 +136,48 @@ public class ProdutoListActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        firebase = LibraryClass.getFirebase().child("produtos");
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                produtos.clear();
+
+                for (DataSnapshot dados : dataSnapshot.getChildren()) {
+                    Produto produto = dados.getValue(Produto.class);
+                    produtos.add(produto);
+                }
+                if (isFromPedido) {
+                    mAdapterCarrinho.notifyDataSetChanged();
+                } else {
+                    mAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        firebase.addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebase.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebase.addValueEventListener(valueEventListener);
     }
 }

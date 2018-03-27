@@ -1,5 +1,7 @@
 package br.android.com.mevenda.Utils;
 
+import android.util.Base64;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -41,5 +43,13 @@ public class Utils {
     public static synchronized String format(Date date, String pattern) {
         sdf.applyPattern(pattern == null ? defaultDatePattern : pattern);
         return sdf.format(date);
+    }
+
+    public static String codificarBase64(String texto) {
+        return Base64.encodeToString(texto.getBytes(), Base64.DEFAULT).replaceAll("(\\n|\\r)", "");
+    }
+
+    public static String decodificarBase64(String textoCodificado) {
+        return new String(Base64.decode(textoCodificado, Base64.DEFAULT));
     }
 }

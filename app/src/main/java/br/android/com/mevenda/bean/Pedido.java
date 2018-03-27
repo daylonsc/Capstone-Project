@@ -1,35 +1,27 @@
 package br.android.com.mevenda.bean;
 
-import android.content.ClipData;
-import android.support.v4.app.NotificationCompat;
-
 import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
 
 /**
  * Created by daylo on 17/03/2018.
  */
 
-public class Pedido extends RealmObject {
-    @PrimaryKey
-    private int id;
+public class Pedido {
+    private String id;
     private Cliente cliente;
-    @Required
-    private RealmList<ItemPedido> itemPedidoList;
-    @Required
+    private List<ItemPedido> itemPedidoList;
     private Date dataEmissao;
     private double valorTotal;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -41,11 +33,11 @@ public class Pedido extends RealmObject {
         this.cliente = cliente;
     }
 
-    public RealmList<ItemPedido> getItemPedidoList() {
+    public List<ItemPedido> getItemPedidoList() {
         return itemPedidoList;
     }
 
-    public void setItemPedidoList(RealmList<ItemPedido> itemPedidoList) {
+    public void setItemPedidoList(List<ItemPedido> itemPedidoList) {
         this.itemPedidoList = itemPedidoList;
     }
 

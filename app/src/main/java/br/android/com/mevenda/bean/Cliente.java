@@ -3,16 +3,14 @@ package br.android.com.mevenda.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by daylo on 17/03/2018.
  */
 
-public class Cliente extends RealmObject implements Parcelable{
-    @PrimaryKey
-    private Integer id;
+
+public class Cliente implements Parcelable{
+
+    private String id;
     private String nome;
     private String email;
     private String telefone;
@@ -21,11 +19,7 @@ public class Cliente extends RealmObject implements Parcelable{
     }
 
     protected Cliente(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readInt();
-        }
+        id = in.readString();
         nome = in.readString();
         email = in.readString();
         telefone = in.readString();
@@ -43,11 +37,11 @@ public class Cliente extends RealmObject implements Parcelable{
         }
     };
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -82,12 +76,7 @@ public class Cliente extends RealmObject implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        if (id == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeInt(id);
-        }
+        parcel.writeString(id);
         parcel.writeString(nome);
         parcel.writeString(email);
         parcel.writeString(telefone);

@@ -8,19 +8,18 @@ import io.realm.annotations.Required;
  * Created by daylo on 17/03/2018.
  */
 
-public class ItemPedido extends RealmObject {
-    @PrimaryKey
-    private int id;
+public class ItemPedido {
+    private String id;
     private Produto produto;
     private int quantidade;
     private double valorUnitario;
     private double valorTotal;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

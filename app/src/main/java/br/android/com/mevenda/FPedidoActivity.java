@@ -18,10 +18,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.LibraryClass;
 import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.bean.Cliente;
 import br.android.com.mevenda.bean.ItemPedido;
@@ -34,11 +39,11 @@ import io.realm.Realm;
 import io.realm.RealmList;
 
 public class FPedidoActivity extends AppCompatActivity {
-    private final Class classCadastro = Pedido.class;
     public final static String CLIENTE_PARAMETER = "cliente";
     public final static String IS_FROM_PEDIDO = "isFromPedido";
     public final static String LIST_PRODUTO_CARRINHO_PARAMETER = "Lista de produtos do carrinho";
     private Cliente clienteSelecionado;
+    private DatabaseReference firebase;
 
     @BindView(R.id.buttonCliente)
     Button buttonCliente;
@@ -84,53 +89,60 @@ public class FPedidoActivity extends AppCompatActivity {
     @OnClick(R.id.buttonGerarPedido)
     public void gerarPedido(View view) {
         if (validarCampos(view)) {
-            Realm realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
+            firebase = LibraryClass.getFirebase().child("pedidos");
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("pedidos");
+            String id = mDatabase.push().getKey();
 
             Pedido pedido = new Pedido();
-            int id = Utils.getNextId(classCadastro);
             pedido.setId(id);
             pedido.setCliente(clienteSelecionado);
             pedido.setDataEmissao(new Date());
             pedido.setItemPedidoList(criarItensPedidos());
-            pedido.setValorTotal(getValorTotal());
+            pedido.setValorTotal(getValorTotalPedido());
 
-            realm.copyToRealmOrUpdate(pedido);
-            realm.commitTransaction();
-            realm.close();
+            try {
+                firebase.child(pedido.getId()).setValue(pedido);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             finish();
         }
     }
 
-    private double getValorTotal() {
+    private double getValorTotalPedido() {
         double valorTotal = 0d;
         for (Produto p : produtoList) {
-            valorTotal += p.getPreco();
+            valorTotal += p.getPreco() * p.getQuantidadePedido();
         }
         return valorTotal;
     }
 
-    private RealmList<ItemPedido> criarItensPedidos() {
-        RealmList<ItemPedido> itemPedidoRealmList = new RealmList<ItemPedido>();
+    private List<ItemPedido> criarItensPedidos() {
+        List<ItemPedido> itemPedidos = new ArrayList<ItemPedido>();
         for (Produto p : produtoList) {
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("itemPedidos");
+            String id = mDatabase.push().getKey();
+
             ItemPedido itemPedido = new ItemPedido();
-            int id = Utils.getNextId(ItemPedido.class);
+
             itemPedido.setId(id);
             itemPedido.setProduto(p);
             itemPedido.setQuantidade(p.getQuantidadePedido());
             itemPedido.setValorUnitario(p.getPreco());
             itemPedido.setValorTotal(p.getPreco() * p.getQuantidadePedido());
-            itemPedidoRealmList.add(itemPedido);
+            itemPedidos.add(itemPedido);
         }
-        return itemPedidoRealmList;
+        return itemPedidos;
     }
 
     private boolean validarCampos(View view) {
-        if(clienteSelecionado == null){
+        if (clienteSelecionado == null) {
             Snackbar.make(view, "Selecione um cliente!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return false;
-        }else if(produtoList == null || produtoList.isEmpty()){
+        } else if (produtoList == null || produtoList.isEmpty()) {
             Snackbar.make(view, "Adicione produtos ao pedido!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return false;
@@ -219,16 +231,16 @@ public class FPedidoActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    private void atualizarTotais() {
+        double valorTotal = 0d;
+        valorTotal = getValorTotalPedido();
+        tvQuantidadeTotalItens.setText(String.valueOf(produtoList.size()));
+        tvValorTotalItens.setText("R$ " + Utils.converterDoubleToMonetario(valorTotal));
+    }
+
     @Override
     public void onBackPressed() {
         showDialogSair();
     }
 
-
-    private void atualizarTotais() {
-        double valorTotal = 0d;
-        valorTotal = getValorTotal();
-        tvQuantidadeTotalItens.setText(String.valueOf(produtoList.size()));
-        tvValorTotalItens.setText("R$ " + Utils.converterDoubleToMonetario(valorTotal));
-    }
 }
