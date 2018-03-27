@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "522588181879",
+    "firebase_url": "https://me-venda.firebaseio.com",
+    "project_id": "me-venda",
+    "storage_bucket": "me-venda.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522588181879:android:1b4822350687bf84",
+        "android_client_info": {
+          "package_name": "br.android.com.mevenda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522588181879-btt6gsja6alb189pk7c8kjl7a34qa5p4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMkIvphBw4zAuOt7M15oir5JLQQmO6xLk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
