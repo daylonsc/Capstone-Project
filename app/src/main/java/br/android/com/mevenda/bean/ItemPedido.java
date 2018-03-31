@@ -1,9 +1,5 @@
 package br.android.com.mevenda.bean;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
-
 /**
  * Created by daylo on 17/03/2018.
  */

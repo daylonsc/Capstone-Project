@@ -10,4 +10,6 @@
     <color name="colorMenos">#8fa5be</color>
     <color name="colorMais">#4a73c1</color>
     <color name="background_carrinho">#e1dfdf</color>
+
+    <color name="dark_icon">#b3000000</color>
 </resources>

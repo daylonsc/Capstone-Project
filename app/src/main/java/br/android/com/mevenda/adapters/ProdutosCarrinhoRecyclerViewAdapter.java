@@ -1,6 +1,7 @@
 package br.android.com.mevenda.adapters;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +31,17 @@ public class ProdutosCarrinhoRecyclerViewAdapter extends
     private static List<Produto> list;
     private static List<Produto> listCarrinho;
     private OnItemClickListener onItemClickListener;
+    private Parcelable layoutManagerSavedState;
+    private RecyclerView recyclerView;
 
-    public ProdutosCarrinhoRecyclerViewAdapter(Context context, List<Produto> list,
+    public ProdutosCarrinhoRecyclerViewAdapter(Context context, List<Produto> list, Parcelable layoutManagerSavedState, RecyclerView recyclerView,
                                                OnItemClickListener onItemClickListener) {
         this.context = context;
         this.list = list;
         this.onItemClickListener = onItemClickListener;
         listCarrinho = new ArrayList<Produto>();
+        this.layoutManagerSavedState = layoutManagerSavedState;
+        this.recyclerView = recyclerView;
     }
 
 
@@ -130,6 +135,8 @@ public class ProdutosCarrinhoRecyclerViewAdapter extends
 
         ViewHolder viewHolder = new ViewHolder(view);
 
+        restoreLayoutManagerPosition();
+
         return viewHolder;
     }
 
@@ -157,6 +164,12 @@ public class ProdutosCarrinhoRecyclerViewAdapter extends
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+    }
+
+    private void restoreLayoutManagerPosition() {
+        if (layoutManagerSavedState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
+        }
     }
 
 }

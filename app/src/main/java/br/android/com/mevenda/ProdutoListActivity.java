@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,13 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.Constantes;
 import br.android.com.mevenda.Utils.LibraryClass;
-import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.adapters.ProdutosCarrinhoRecyclerViewAdapter;
 import br.android.com.mevenda.adapters.ProdutosRecyclerViewAdapter;
-import br.android.com.mevenda.bean.Cliente;
 import br.android.com.mevenda.bean.Produto;
-import io.realm.Realm;
 
 public class ProdutoListActivity extends AppCompatActivity {
 
@@ -40,6 +37,10 @@ public class ProdutoListActivity extends AppCompatActivity {
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private List<Produto> produtos;
+
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable layoutManagerSavedState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class ProdutoListActivity extends AppCompatActivity {
     }
 
     private void cadastrarProduto(View view) {
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("produtos");
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(Constantes.PARAMETER_FIREBASE_PRODUTO);
         String id = mDatabase.push().getKey();
         Produto produto = new Produto();
         produto.setId(id);
@@ -110,33 +111,37 @@ public class ProdutoListActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Snackbar.make(view, "Produto inserido com sucesso!", Snackbar.LENGTH_LONG)
+        Snackbar.make(view, R.string.mensagem_sucesso_produto, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
         atualizarLista();
     }
 
-    private void atualizarLista() {
+    private void setmAdapter(){
         if (isFromPedido) {
-            mAdapterCarrinho = new ProdutosCarrinhoRecyclerViewAdapter(this, produtos, new ProdutosCarrinhoRecyclerViewAdapter.OnItemClickListener() {
+            mAdapterCarrinho = new ProdutosCarrinhoRecyclerViewAdapter(this, produtos, layoutManagerSavedState, mRecyclerView, new ProdutosCarrinhoRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
 
                 }
             });
         } else {
-            mAdapter = new ProdutosRecyclerViewAdapter(this, produtos, new ProdutosRecyclerViewAdapter.OnItemClickListener() {
+            mAdapter = new ProdutosRecyclerViewAdapter(this, produtos, layoutManagerSavedState, mRecyclerView, new ProdutosRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
 
                 }
             });
         }
+    }
+
+    private void atualizarLista() {
+        setmAdapter();
         mRecyclerView = findViewById(R.id.produto_recycler_view);
         mRecyclerView.setAdapter(isFromPedido ? mAdapterCarrinho : mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        firebase = LibraryClass.getFirebase().child("produtos");
+        firebase = LibraryClass.getFirebase().child(Constantes.PARAMETER_FIREBASE_PRODUTO);
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -166,6 +171,16 @@ public class ProdutoListActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        // restore RecyclerView state
+        if (mBundleRecyclerViewState != null) {
+            layoutManagerSavedState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
+
+            setmAdapter();
+
+            mRecyclerView.setAdapter(mAdapter);
+        }
         firebase.addValueEventListener(valueEventListener);
     }
 
@@ -179,5 +194,14 @@ public class ProdutoListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         firebase.addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // save RecyclerView state
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
     }
 }

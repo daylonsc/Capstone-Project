@@ -1,8 +1,22 @@
 <resources>
     <string name="app_name">Me venda</string>
+    <string name="email">dayloncosta@hotmail.com</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_menu_search">Buscar</string>
+
+
+    <string name="action_menu_save">Salvar</string>
+    <string name="action_sinal_mais">+</string>
+    <string name="action_sinal_menos">-</string>
+    <string name="quantidade_inicial_carrinho">0</string>
+
+    <string name="acess_float_button_list_produto">Botão utilizado para cadastrar novos produtos</string>
+    <string name="acess_float_button_list_cliente">Botão utilizado para cadastrar novos clientes</string>
+    <string name="acess_float_button_list_pedido">Botão que leva para tela de cadastro de novos pedidos</string>
 
     <string name="navigation_drawer_item_label_1">Produtos</string>
     <string name="navigation_drawer_item_label_2">Clientes</string>
@@ -13,6 +27,12 @@
     <string name="title_activity_cliente_list">Clientes</string>
     <string name="title_activity_pedido_list">Pedidos</string>
     <string name="title_activity_cadastro_pedido">Cadastro de Pedido</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- Retorno de mensagens -->
+    <string name="mensagem_sucesso_cliente">Cliente inserido com sucesso!</string>
+    <string name="mensagem_sucesso_produto">Produto inserido com sucesso!</string>
 
 
     <!-- Strings related to pedido -->
@@ -25,5 +45,7 @@
     <string name="label_valor_total">Valor Total:</string>
     <string name="tv_total_itens">0</string>
     <string name="tv_valor_total_pedido">R$ 0,00</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

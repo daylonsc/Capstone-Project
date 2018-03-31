@@ -3,10 +3,6 @@ package br.android.com.mevenda.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by daylo on 17/03/2018.
  */

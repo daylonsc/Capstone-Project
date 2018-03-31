@@ -1,6 +1,7 @@
 package br.android.com.mevenda.adapters;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,9 @@ import java.util.List;
 import br.android.com.mevenda.R;
 import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.bean.Pedido;
+import br.android.com.mevenda.bean.Produto;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.internal.Util;
 
 /**
  * Created by daylo on 17/03/2018.
@@ -25,14 +26,18 @@ public class PedidosRecyclerViewAdapter extends
     private static final String TAG = PedidosRecyclerViewAdapter.class.getSimpleName();
 
     private Context context;
-    private List<Pedido> list;
+    private static List<Pedido> list;
     private OnItemClickListener onItemClickListener;
+    private Parcelable layoutManagerSavedState;
+    private RecyclerView recyclerView;
 
-    public PedidosRecyclerViewAdapter(Context context, List<Pedido> list,
+    public PedidosRecyclerViewAdapter(Context context, List<Pedido> list, Parcelable layoutManagerSavedState, RecyclerView recyclerView,
                                       OnItemClickListener onItemClickListener) {
         this.context = context;
         this.list = list;
         this.onItemClickListener = onItemClickListener;
+        this.layoutManagerSavedState = layoutManagerSavedState;
+        this.recyclerView = recyclerView;
     }
 
 
@@ -74,6 +79,8 @@ public class PedidosRecyclerViewAdapter extends
 
         ViewHolder viewHolder = new ViewHolder(view);
 
+        restoreLayoutManagerPosition();
+
         return viewHolder;
     }
 
@@ -88,6 +95,10 @@ public class PedidosRecyclerViewAdapter extends
         holder.bind(item, onItemClickListener);
     }
 
+    public static Object getItem(int position) {
+        return list.get(position);
+    }
+
 
     @Override
     public int getItemCount() {
@@ -96,6 +107,12 @@ public class PedidosRecyclerViewAdapter extends
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+    }
+
+    private void restoreLayoutManagerPosition() {
+        if (layoutManagerSavedState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
+        }
     }
 
 }

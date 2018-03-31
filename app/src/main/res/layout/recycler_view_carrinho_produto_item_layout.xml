@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Arroz pacote 1kg"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
@@ -70,7 +69,7 @@
         android:layout_height="31dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="72dp"
-        android:text="+"
+        android:text="@string/action_sinal_mais"
         android:textColor="@color/colorWhite"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="@+id/imageView5"
@@ -82,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="70dp"
-        android:text="-"
+        android:text="@string/action_sinal_menos"
         android:textColor="@color/colorWhite"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/imageView5"
@@ -94,7 +93,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="R$ 2,21"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/imageViewMenos"
         app:layout_constraintTop_toTopOf="@+id/imageView4" />
@@ -105,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="16dp"
-        android:text="0"
+        android:text="@string/quantidade_inicial_carrinho"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="@+id/imageView5" />

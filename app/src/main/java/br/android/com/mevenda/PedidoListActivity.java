@@ -2,13 +2,12 @@ package br.android.com.mevenda;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -20,14 +19,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.Constantes;
 import br.android.com.mevenda.Utils.LibraryClass;
-import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.adapters.PedidosRecyclerViewAdapter;
-import br.android.com.mevenda.adapters.ProdutosRecyclerViewAdapter;
-import br.android.com.mevenda.bean.Cliente;
 import br.android.com.mevenda.bean.Pedido;
-import br.android.com.mevenda.bean.Produto;
-import io.realm.Realm;
 
 public class PedidoListActivity extends AppCompatActivity {
 
@@ -36,6 +31,10 @@ public class PedidoListActivity extends AppCompatActivity {
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private List<Pedido> pedidos;
+
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable layoutManagerSavedState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,20 +72,17 @@ public class PedidoListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     private void atualizarLista() {
 
-        mAdapter = new PedidosRecyclerViewAdapter(this, pedidos, new PedidosRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
+        setmAdapter();
 
-            }
-        });
         mRecyclerView = (RecyclerView) findViewById(R.id.pedido_recycler_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        firebase = LibraryClass.getFirebase().child("pedidos");
+        firebase = LibraryClass.getFirebase().child(Constantes.PARAMETER_FIREBASE_PEDIDO);
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -110,9 +106,28 @@ public class PedidoListActivity extends AppCompatActivity {
 
     }
 
+    private void setmAdapter() {
+        mAdapter = new PedidosRecyclerViewAdapter(this, pedidos, layoutManagerSavedState, mRecyclerView, new PedidosRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+            }
+        });
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+
+        if (mBundleRecyclerViewState != null) {
+            layoutManagerSavedState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
+
+            setmAdapter();
+
+            mRecyclerView.setAdapter(mAdapter);
+        }
+
         firebase.addValueEventListener(valueEventListener);
     }
 
@@ -126,6 +141,15 @@ public class PedidoListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         firebase.addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // save RecyclerView state
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(KEY_RECYCLER_STATE, listState);
     }
 
 }

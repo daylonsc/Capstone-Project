@@ -7,8 +7,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.realm.Realm;
-
 /**
  * Created by daylo on 17/03/2018.
  */
@@ -19,14 +17,6 @@ public class Utils {
     private static final SimpleDateFormat sdf = (SimpleDateFormat)SimpleDateFormat.getInstance();
     private static String defaultDatePattern = "dd/MM/yyyy";
 
-    public static int getNextId( Class classe){
-        Realm realm = Realm.getDefaultInstance();
-        int prodximoId = VALOR_INICIAL_ID;
-        if(realm.where(classe).max(CHAVE_PRIMARIA_TABELA) != null)
-            prodximoId = realm.where(classe).max(CHAVE_PRIMARIA_TABELA).intValue() + VALOR_INICIAL_ID;
-
-        return prodximoId;
-    }
 
     public static String converterDoubleToMonetario(double valor){
         String valorString = "0,00";

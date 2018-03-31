@@ -1,6 +1,7 @@
 package br.android.com.mevenda.adapters;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,12 +31,17 @@ public class ProdutosRecyclerViewAdapter extends
     private List<Produto> list;
     private OnItemClickListener onItemClickListener;
 
+    private Parcelable layoutManagerSavedState;
+    private RecyclerView recyclerView;
 
-    public ProdutosRecyclerViewAdapter(Context context, List<Produto> list,
+
+    public ProdutosRecyclerViewAdapter(Context context, List<Produto> list, Parcelable layoutManagerSavedState, RecyclerView recyclerView,
                                        OnItemClickListener onItemClickListener) {
         this.context = context;
         this.list = list;
         this.onItemClickListener = onItemClickListener;
+        this.layoutManagerSavedState = layoutManagerSavedState;
+        this.recyclerView = recyclerView;
     }
 
 
@@ -74,6 +80,8 @@ public class ProdutosRecyclerViewAdapter extends
 
         ViewHolder viewHolder = new ViewHolder(view);
 
+        restoreLayoutManagerPosition();
+
         return viewHolder;
     }
 
@@ -93,6 +101,12 @@ public class ProdutosRecyclerViewAdapter extends
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+    }
+
+    private void restoreLayoutManagerPosition() {
+        if (layoutManagerSavedState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
+        }
     }
 
 }

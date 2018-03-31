@@ -3,7 +3,6 @@
     <TextView
         android:id="@+id/attrib_quantidade"
         android:padding="18dip"
-        android:text="Qtde: 1"
         android:layout_weight="1"
         android:textColor="#000000" />
 
@@ -13,6 +12,5 @@
         android:gravity="right"
         android:layout_weight="1"
         android:padding="18dip"
-        android:text="R$ 2,21"
         android:textColor="#000000" />
 </TableRow>
