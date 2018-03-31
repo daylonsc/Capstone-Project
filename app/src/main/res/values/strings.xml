@@ -33,9 +33,17 @@
     <!-- Retorno de mensagens -->
     <string name="mensagem_sucesso_cliente">Cliente inserido com sucesso!</string>
     <string name="mensagem_sucesso_produto">Produto inserido com sucesso!</string>
+    <string name="mensagem_erro_cliente">Selecione um cliente!</string>
+    <string name="mensagem_erro_produto">Adicione produtos ao pedido!</string>
+    <string name="mensagem_saida_pedido">Deseja realmente sair do pedido?</string>
+
+    <string name="dialog_sim">Sim</string>
+    <string name="dialog_nao">Não</string>
 
 
     <!-- Strings related to pedido -->
+    <string name="label_qtde">Qtde: </string>
+    <string name="label_cifrao">R$ </string>
     <string name="action_cliente">Selecione um cliente</string>
     <string name="action_produto">Adicione Produtos</string>
     <string name="action_mostrar_itens">Mostrar Itens</string>

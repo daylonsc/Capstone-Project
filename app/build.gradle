@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'mevenda'
             keyPassword 'dsc110689'
-            storeFile file('C:/Users/daylo/Documents/Projetos/udacity/Mevenda/keymevenda.jks')
+            storeFile file("${rootDir}/keymevenda.jks")
             storePassword 'dsc110689'
         }
     }

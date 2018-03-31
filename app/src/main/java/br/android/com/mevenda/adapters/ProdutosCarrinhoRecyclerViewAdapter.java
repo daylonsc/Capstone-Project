@@ -144,7 +144,7 @@ public class ProdutosCarrinhoRecyclerViewAdapter extends
     public void onBindViewHolder(ViewHolder holder, int position) {
         Produto item = list.get(position);
         holder.textViewNomeProduto.setText(item.getNome());
-        holder.textViewPreco.setText("R$ " + Utils.converterDoubleToMonetario(item.getPreco()));
+        holder.textViewPreco.setText(R.string.label_cifrao + Utils.converterDoubleToMonetario(item.getPreco()));
         holder.bind(item, onItemClickListener);
     }
 

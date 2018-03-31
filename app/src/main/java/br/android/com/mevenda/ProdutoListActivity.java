@@ -176,12 +176,9 @@ public class ProdutoListActivity extends AppCompatActivity {
         if (mBundleRecyclerViewState != null) {
             layoutManagerSavedState = mBundleRecyclerViewState.getParcelable(KEY_RECYCLER_STATE);
             mRecyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
-
             setmAdapter();
-
-            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setAdapter(isFromPedido ? mAdapterCarrinho : mAdapter);
         }
-        firebase.addValueEventListener(valueEventListener);
     }
 
     @Override

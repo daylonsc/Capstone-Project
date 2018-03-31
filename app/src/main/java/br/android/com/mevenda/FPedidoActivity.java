@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.android.com.mevenda.Utils.Constantes;
 import br.android.com.mevenda.Utils.LibraryClass;
 import br.android.com.mevenda.Utils.Utils;
 import br.android.com.mevenda.bean.Cliente;
@@ -82,8 +83,8 @@ public class FPedidoActivity extends AppCompatActivity {
     @OnClick(R.id.buttonGerarPedido)
     public void gerarPedido(View view) {
         if (validarCampos(view)) {
-            firebase = LibraryClass.getFirebase().child("pedidos");
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("pedidos");
+            firebase = LibraryClass.getFirebase().child(Constantes.PARAMETER_FIREBASE_PEDIDO);
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(Constantes.PARAMETER_FIREBASE_PEDIDO);
             String id = mDatabase.push().getKey();
 
             Pedido pedido = new Pedido();
@@ -115,7 +116,7 @@ public class FPedidoActivity extends AppCompatActivity {
     private List<ItemPedido> criarItensPedidos() {
         List<ItemPedido> itemPedidos = new ArrayList<ItemPedido>();
         for (Produto p : produtoList) {
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("itemPedidos");
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference(Constantes.PARAMETER_FIREBASE_ITEM_PEDIDO);
             String id = mDatabase.push().getKey();
 
             ItemPedido itemPedido = new ItemPedido();
@@ -132,12 +133,12 @@ public class FPedidoActivity extends AppCompatActivity {
 
     private boolean validarCampos(View view) {
         if (clienteSelecionado == null) {
-            Snackbar.make(view, "Selecione um cliente!", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            Snackbar.make(view, R.string.mensagem_erro_cliente, Snackbar.LENGTH_LONG)
+                    .setAction(Constantes.NAME_ACTION_SNACK_BAR, null).show();
             return false;
         } else if (produtoList == null || produtoList.isEmpty()) {
-            Snackbar.make(view, "Adicione produtos ao pedido!", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            Snackbar.make(view, R.string.mensagem_erro_produto, Snackbar.LENGTH_LONG)
+                    .setAction(Constantes.NAME_ACTION_SNACK_BAR, null).show();
             return false;
         }
         return true;
@@ -166,8 +167,8 @@ public class FPedidoActivity extends AppCompatActivity {
 
                 ((TextView) row1.findViewById(R.id.attrib_name_produto)).setText(p.getNome());
 
-                ((TextView) row2.findViewById(R.id.attrib_quantidade)).setText("Qtde: " + String.valueOf(p.getQuantidadePedido()));
-                ((TextView) row2.findViewById(R.id.attrib_preco)).setText("R$ " + Utils.converterDoubleToMonetario(p.getPreco()));
+                ((TextView) row2.findViewById(R.id.attrib_quantidade)).setText(R.string.label_qtde + String.valueOf(p.getQuantidadePedido()));
+                ((TextView) row2.findViewById(R.id.attrib_preco)).setText(R.string.label_cifrao + Utils.converterDoubleToMonetario(p.getPreco()));
 
                 tabelaItens.addView(row1);
                 tabelaItens.addView(row2);
@@ -205,15 +206,15 @@ public class FPedidoActivity extends AppCompatActivity {
 
     public void showDialogSair() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Deseja realmente sair do pedido?")
-                .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.mensagem_saida_pedido)
+                .setPositiveButton(R.string.dialog_sim, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
                             }
 
                         }
-                ).setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                ).setNegativeButton(R.string.dialog_nao, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -228,7 +229,7 @@ public class FPedidoActivity extends AppCompatActivity {
         double valorTotal = 0d;
         valorTotal = getValorTotalPedido();
         tvQuantidadeTotalItens.setText(String.valueOf(produtoList.size()));
-        tvValorTotalItens.setText("R$ " + Utils.converterDoubleToMonetario(valorTotal));
+        tvValorTotalItens.setText(R.string.label_cifrao + Utils.converterDoubleToMonetario(valorTotal));
     }
 
     @Override
